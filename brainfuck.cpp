@@ -9,7 +9,7 @@
 using std::stack;
 
 
-string brainfuck_run(const string& code, int max_steps)
+string brainfuck_run(int max_steps, const string& code, const string& input)
 {
     // initialize runtime
     stack<string::const_iterator> call_stack; // stack of loops entered
@@ -26,6 +26,7 @@ string brainfuck_run(const string& code, int max_steps)
 
     string output = "";
 
+    string::const_iterator input_iterator = input.begin(); // input reader
     string::const_iterator current_end = code.end(); // current end of code that we are looking out for
 
     // run the brainfuck code
@@ -48,46 +49,50 @@ string brainfuck_run(const string& code, int max_steps)
         case '<': // decrement pointer
             buffer_pointer = buffer_mask & (buffer_pointer - 1);
             break;
-        case '[': // conditional loop
+        case '[': // conditional loop enter
         {
-//            printf("start [\n");
             if (buffer[buffer_pointer] == 0)
             {
                 int nest_depth = 1;
-//                printf("mid [ %c loop\n", *iter);
                 for (iter++; nest_depth > 0 && iter != current_end; iter++)
                 {
-//                    if (iter == current_end)
-//                        printf("debug nest_depth %d\n", nest_depth);
                     if (*iter == '[')
                         nest_depth++;
                     else if (*iter == ']')
                         nest_depth--;
                 }
-//                printf("mid [ %c loop end\n", *iter);
                 if (nest_depth > 0 || iter == current_end)
-                    return output; // improveme
+                    iter = current_end - 1; // force end of segment
             }
             else
             {
-//                printf("other mid [\n");
                 call_stack.push(iter - 1);
             }
-//            printf("end [\n");
             break;
         }
-        case ']':
+        case ']': // conditional loop exit
         {
-            if (call_stack.size() == 0)
-                return output; // improveme
-
-            if (buffer[buffer_pointer] != 0)
+            if (call_stack.size() == 0) // if its misplaced,
+            {
+                iter = current_end - 1; // force end of segment
+            }
+            else if (buffer[buffer_pointer] != 0)
             {
                 iter = call_stack.top();
+                call_stack.pop();
             }
-            call_stack.pop();
+            else
+            {
+                call_stack.pop();
+            }
             break;
         }
+        case ',': // input
+            if (input_iterator != input.end()) // if there is input to read
+                buffer[buffer_pointer] = *input_iterator++;
+            else // if there is no input,
+                iter = current_end - 1; // force end of segment
+
         case '.': // output
             output += buffer[buffer_pointer];
             break;
@@ -96,11 +101,6 @@ string brainfuck_run(const string& code, int max_steps)
             break;
         default: // ignore anything else
             break;
-        }
-
-        if (iter == current_end)
-        {
-            printf("this is the bug\n");
         }
     }
 

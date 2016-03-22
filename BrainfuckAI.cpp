@@ -63,7 +63,7 @@ string BrainfuckAIInstance::info() const
 void BrainfuckAIInstance::run()
 {
 //    printf("debug start run\n");
-    string output = brainfuck_run(this->code, 5000);
+    string output = brainfuck_run(5000, this->code);
 //    printf("debug mid run\n");
     this->set_score(this->create_score(output));
 }
