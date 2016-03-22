@@ -34,7 +34,7 @@ int main (int argc, char** argv)
     }
 
 //    GenerationalAI ai(generation_duplicate_top_quartile, children);
-    PartitionedGenerationalAI ai(generation_duplicate_top_quartile, children, 4);
+    PartitionedGenerationalAI ai(generation_duplicate_top_quartile_with_ancestor, children, 8);
     ai.run_generation(); // first generation to set values
 
     int generation = 1;
@@ -42,7 +42,7 @@ int main (int argc, char** argv)
     while (ai.best_score() > 0)
     {
         ai.run_generation();
-        if (generation++ % 50 == 0)
+        if (++generation % 100 == 0)
         {
             cout << "generation " << generation << endl;
             ai.print_scores(1);

@@ -60,6 +60,8 @@ protected:
 // simple next generation function which reproduces the top quartile of instances
 vector<AIInstance*> generation_duplicate_top_quartile (vector<AIInstance*>& instances);
 
+// same as above, but also clones the ancestor randomly
+vector<AIInstance*> generation_duplicate_top_quartile_with_ancestor (vector<AIInstance*>& instances);
 
 
 // an extension of the generational ai which implements multiple sectioned pools where instances only compete inside their pool

@@ -108,6 +108,24 @@ vector<AIInstance*> generation_duplicate_top_quartile (vector<AIInstance*>& inst
     return new_instances;
 }
 
+vector<AIInstance*> generation_duplicate_top_quartile_with_ancestor (vector<AIInstance*>& instances)
+{
+    vector<AIInstance*> new_instances;
+    vector<AIInstance*>::const_iterator midpoint = instances.begin() + (instances.size() / 4);
+    for (vector<AIInstance*>::const_iterator iter = instances.begin(); iter != midpoint; iter++)
+    {
+        if (rand() % 4)
+            new_instances.push_back((*iter)->clone());
+        else
+            new_instances.push_back((*iter)->create_child());
+        new_instances.push_back((*iter)->create_child());
+        new_instances.push_back((*iter)->create_child());
+        new_instances.push_back((*iter)->create_child());
+    }
+    return new_instances;
+}
+
+
 
 
 
