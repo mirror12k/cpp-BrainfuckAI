@@ -3,10 +3,15 @@
 
 
 
+#include <iostream>
 #include <algorithm>
 
+using std::cout;
+using std::endl;
 using std::sort;
 
+
+AIInstance::~AIInstance() {}
 
 int AIInstance::get_score() const
 {
@@ -31,11 +36,27 @@ bool operator< (AIInstance const& a, AIInstance const& b)
 GenerationalAI::GenerationalAI(vector<AIInstance*> (*next_generation_function)(vector<AIInstance*>& instances), vector<AIInstance*> initial)
 : next_generation_function(next_generation_function), instances(initial) {}
 
-
 bool compareAIInstances(const AIInstance* const a, const AIInstance* const b)
 {
     return *a < *b;
 }
+
+int GenerationalAI::best_score() const
+{
+    if (this->last_generation.size() == 0)
+        return -1;
+    else
+        return this->last_generation[0]->get_score();
+
+}
+
+void GenerationalAI::print_scores() const
+{
+    if (this->last_generation.size() >= 5)
+        for (int i = 0; i < 5; i++)
+            cout << this->last_generation[i]->info() << endl;
+}
+
 
 void GenerationalAI::run_generation()
 {
@@ -58,13 +79,14 @@ void GenerationalAI::rank_instances ()
 
 void GenerationalAI::generate_next_generation ()
 {
-    vector<AIInstance*> old_instances = this->instances;
-    this->instances = this->next_generation_function(this->instances);
-    while (old_instances.size() > 0)
+    for (vector<AIInstance*>::iterator iter = this->last_generation.begin(); iter != this->last_generation.end(); iter++)
     {
-        delete old_instances.back();
-        old_instances.pop_back();
+        delete *iter;
     }
+    this->last_generation.clear();
+
+    this->last_generation = this->instances;
+    this->instances = this->next_generation_function(this->instances);
 }
 
 

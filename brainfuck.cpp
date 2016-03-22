@@ -26,10 +26,10 @@ string brainfuck_run(const string& code, int max_steps)
 
     string output = "";
 
-    string::const_iterator current_end = code.cend(); // current end of code that we are looking out for
+    string::const_iterator current_end = code.end(); // current end of code that we are looking out for
 
     // run the brainfuck code
-    for (string::const_iterator iter = code.cbegin(); iter != current_end; iter++)
+    for (string::const_iterator iter = code.begin(); iter != current_end; iter++)
     {
         if (++steps_taken == max_steps) // ensure we haven't taken too many steps
             break;
@@ -50,27 +50,37 @@ string brainfuck_run(const string& code, int max_steps)
             break;
         case '[': // conditional loop
         {
+//            printf("start [\n");
             if (buffer[buffer_pointer] == 0)
             {
                 int nest_depth = 1;
+//                printf("mid [ %c loop\n", *iter);
                 for (iter++; nest_depth > 0 && iter != current_end; iter++)
                 {
+//                    if (iter == current_end)
+//                        printf("debug nest_depth %d\n", nest_depth);
                     if (*iter == '[')
                         nest_depth++;
                     else if (*iter == ']')
                         nest_depth--;
                 }
-                if (nest_depth > 0)
+//                printf("mid [ %c loop end\n", *iter);
+                if (nest_depth > 0 || iter == current_end)
                     return output; // improveme
             }
             else
             {
+//                printf("other mid [\n");
                 call_stack.push(iter - 1);
             }
+//            printf("end [\n");
             break;
         }
         case ']':
         {
+            if (call_stack.size() == 0)
+                return output; // improveme
+
             if (buffer[buffer_pointer] != 0)
             {
                 iter = call_stack.top();
@@ -86,6 +96,11 @@ string brainfuck_run(const string& code, int max_steps)
             break;
         default: // ignore anything else
             break;
+        }
+
+        if (iter == current_end)
+        {
+            printf("this is the bug\n");
         }
     }
 

@@ -19,6 +19,8 @@ public:
     int get_score() const;
     friend bool operator< (AIInstance const& a, AIInstance const& b);
 
+    virtual string info() const = 0;
+
     // virtual function responsible for executing the AI and setting its own score
     virtual void run () = 0;
     // virtual function responsible for replicating and mutating this instance
@@ -40,14 +42,18 @@ public:
     // runs a single generation on the competitors
     void run_generation();
 
+    void print_scores() const;
+    int best_score() const;
+
 private:
     // internal methods for completing subtasks of a generation
-    void generate_next_generation();
     void run_instances ();
     void rank_instances();
+    void generate_next_generation();
 
     vector<AIInstance*> (*next_generation_function)(vector<AIInstance*>& instances);
     vector<AIInstance*> instances;
+    vector<AIInstance*> last_generation;
 };
 
 // simple next generation function which reproduces the top quartile of instances
