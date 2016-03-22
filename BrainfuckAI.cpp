@@ -77,23 +77,35 @@ AIInstance* BrainfuckAIInstance::create_child() const
     {
         if (new_code.size() > 0)
             if (rand() % 15 == 0) {
-    //            printf("debug set1\n");
                 new_code[rand() % new_code.size()] = this->new_instruction();
             }
         if (new_code.size() > 0)
             if (rand() % 24 == 0)
             {
-    //            printf("debug set2\n");
                 new_code.erase(rand() % new_code.size());
             }
         if (new_code.size() < 500)
-            if (rand() % 48 == 0)
+            if (rand() % 24 == 0)
             {
-    //            printf("debug set3 %d\n", new_code.size());
                 if (new_code.size() == 0)
                     new_code += this->new_instruction();
                 else
                     new_code.insert(rand() % new_code.size(), 1, this->new_instruction());
+            }
+        if (new_code.size() > 2)
+            if (rand() % 48 == 0)
+            {
+                int index = rand() % new_code.size();
+                int transplant_size = rand() % (new_code.size() - index + 1);
+                if (transplant_size == 0)
+                    transplant_size = 1;
+                if (transplant_size == new_code.size())
+                    transplant_size--;
+                int transplant_index = rand() % (new_code.size() - transplant_size);
+
+                string transplant = new_code.substr(index, transplant_size);
+                new_code.erase(index, transplant_size);
+                new_code.insert(transplant_index, transplant);
             }
     }
 
