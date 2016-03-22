@@ -9,7 +9,7 @@
 class BrainfuckAIInstance : public AIInstance
 {
 public:
-    BrainfuckAIInstance(string& code, const string& expected);
+    BrainfuckAIInstance(const string& code, const string& expected);
     virtual ~BrainfuckAIInstance();
 
     virtual int create_score (const string& output);
@@ -20,10 +20,11 @@ public:
 
     virtual void run ();
     virtual AIInstance* create_child() const;
+    virtual AIInstance* clone() const;
 
 
 //private:
-    string code;
+    const string code;
     const string expected;
 };
 

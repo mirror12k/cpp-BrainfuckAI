@@ -9,7 +9,7 @@
 
 
 
-BrainfuckAIInstance::BrainfuckAIInstance(string& code, const string& expected) : code(code), expected(expected)
+BrainfuckAIInstance::BrainfuckAIInstance(const string& code, const string& expected) : code(code), expected(expected)
 {}
 
 BrainfuckAIInstance::~BrainfuckAIInstance() {}
@@ -95,13 +95,13 @@ AIInstance* BrainfuckAIInstance::create_child() const
         if (new_code.size() > 2)
             if (rand() % 48 == 0)
             {
-                int index = rand() % new_code.size();
-                int transplant_size = rand() % (new_code.size() - index + 1);
+                unsigned int index = rand() % new_code.size();
+                unsigned int transplant_size = rand() % (new_code.size() - index + 1);
                 if (transplant_size == 0)
                     transplant_size = 1;
                 if (transplant_size == new_code.size())
                     transplant_size--;
-                int transplant_index = rand() % (new_code.size() - transplant_size);
+                unsigned int transplant_index = rand() % (new_code.size() - transplant_size);
 
                 string transplant = new_code.substr(index, transplant_size);
                 new_code.erase(index, transplant_size);
@@ -112,7 +112,10 @@ AIInstance* BrainfuckAIInstance::create_child() const
     return new BrainfuckAIInstance(new_code, this->expected);
 }
 
-
+AIInstance* BrainfuckAIInstance::clone() const
+{
+    return new BrainfuckAIInstance(this->code, this->expected);
+}
 
 
 

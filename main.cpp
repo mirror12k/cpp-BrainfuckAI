@@ -28,12 +28,13 @@ int main (int argc, char** argv)
 
     BrainfuckAIInstance inst(start_code, expected);
     vector<AIInstance*> children;
-    for (int i = 0; i < 50; i++)
+    for (int i = 0; i < 40; i++)
     {
         children.push_back(inst.create_child());
     }
 
-    GenerationalAI ai(generation_duplicate_top_quartile, children);
+//    GenerationalAI ai(generation_duplicate_top_quartile, children);
+    PartitionedGenerationalAI ai(generation_duplicate_top_quartile, children, 4);
     ai.run_generation(); // first generation to set values
 
     int generation = 1;
