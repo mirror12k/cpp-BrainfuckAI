@@ -42,7 +42,7 @@ public:
     // runs a single generation on the competitors
     void run_generation();
 
-    void print_scores() const;
+    void print_scores(int number) const;
     int best_score() const;
 
 private:

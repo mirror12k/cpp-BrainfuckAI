@@ -50,10 +50,10 @@ int GenerationalAI::best_score() const
 
 }
 
-void GenerationalAI::print_scores() const
+void GenerationalAI::print_scores(int number) const
 {
-    if (this->last_generation.size() >= 5)
-        for (int i = 0; i < 5; i++)
+    if (this->last_generation.size() >= number)
+        for (int i = 0; i < number; i++)
             cout << this->last_generation[i]->info() << endl;
 }
 

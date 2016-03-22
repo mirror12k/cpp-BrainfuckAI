@@ -63,7 +63,7 @@ string BrainfuckAIInstance::info() const
 void BrainfuckAIInstance::run()
 {
 //    printf("debug start run\n");
-    string output = brainfuck_run(this->code, 1000);
+    string output = brainfuck_run(this->code, 5000);
 //    printf("debug mid run\n");
     this->set_score(this->create_score(output));
 }
@@ -73,21 +73,21 @@ AIInstance* BrainfuckAIInstance::create_child() const
 {
     string new_code = this->code;
 
-    for (int i = 0; i < 2; i++)
+    for (int i = 0; i < 10; i++)
     {
         if (new_code.size() > 0)
-            if (rand() % 5 == 0) {
+            if (rand() % 15 == 0) {
     //            printf("debug set1\n");
                 new_code[rand() % new_code.size()] = this->new_instruction();
             }
         if (new_code.size() > 0)
-            if (rand() % 8 == 0)
+            if (rand() % 24 == 0)
             {
     //            printf("debug set2\n");
                 new_code.erase(rand() % new_code.size());
             }
-        if (new_code.size() < 200)
-            if (rand() % 5 == 0)
+        if (new_code.size() < 500)
+            if (rand() % 48 == 0)
             {
     //            printf("debug set3 %d\n", new_code.size());
                 if (new_code.size() == 0)

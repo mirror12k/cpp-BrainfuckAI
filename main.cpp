@@ -17,20 +17,17 @@ int main (int argc, char** argv)
 
     srand(time(NULL));
 
-//    cout << "hello world" << endl;
-
 //    string output = brainfuck_run(" ++++++ [->++++++++<] > +++ . -- . ++ . ++++ . ---- .", 10000);
-//    string output = brainfuck_run("[---<.]", 10000);
 
 //    cout << "got output: " << output << endl;
 
     string start_code = "++++++++++++++++++";
-    string expected = "0123456789";
+    string expected = "01234567890123456789012345678901234567890123456789";
 
 
     BrainfuckAIInstance inst(start_code, expected);
     vector<AIInstance*> children;
-    for (int i = 0; i < 100; i++)
+    for (int i = 0; i < 30; i++)
     {
         children.push_back(inst.create_child());
     }
@@ -40,16 +37,16 @@ int main (int argc, char** argv)
 
     int generation = 1;
 
-    while (ai.best_score() > 10)
+    while (ai.best_score() > 0)
     {
         ai.run_generation();
         if (generation++ % 50 == 0)
         {
             cout << "generation " << generation << endl;
-            ai.print_scores();
+            ai.print_scores(1);
         }
     }
-    ai.print_scores();
+    ai.print_scores(5);
 
 
     cout << "end\n" << endl;
