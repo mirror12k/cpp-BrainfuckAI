@@ -34,8 +34,12 @@ bool operator< (AIInstance const& a, AIInstance const& b)
 
 
 
-GenerationalAI::GenerationalAI(vector<AIInstance*> (*next_generation_function)(vector<AIInstance*>& instances), vector<AIInstance*> initial)
-: next_generation_function(next_generation_function), instances(initial) {}
+GenerationalAI::GenerationalAI(
+        tuple<string, string> (*challenge_function)(),
+        vector<AIInstance*> (*next_generation_function)(vector<AIInstance*>& instances),
+        vector<AIInstance*> initial
+    )
+: challenge_function(challenge_function), next_generation_function(next_generation_function), instances(initial) {}
 
 bool compareAIInstances(const AIInstance* const a, const AIInstance* const b)
 {
@@ -69,8 +73,12 @@ void GenerationalAI::run_generation()
 
 void GenerationalAI::run_instances ()
 {
+    string input;
+    string expected;
+    std::tie(input, expected) = this->challenge_function();
+
     for (vector<AIInstance*>::iterator iter = this->instances.begin(); iter != this->instances.end(); iter++)
-        (*iter)->run();
+        (*iter)->run(input, expected);
 }
 
 void GenerationalAI::rank_instances ()
@@ -133,9 +141,12 @@ vector<AIInstance*> generation_duplicate_top_quartile_with_ancestor (vector<AIIn
 
 
 
-PartitionedGenerationalAI::PartitionedGenerationalAI(vector<AIInstance*> (*next_generation_function)(vector<AIInstance*>& instances),
-    vector<AIInstance*> initial, unsigned int pool_count)
-    : GenerationalAI(next_generation_function, vector<AIInstance*>())
+PartitionedGenerationalAI::PartitionedGenerationalAI(
+        tuple<string, string> (*challenge_function)(),
+        vector<AIInstance*> (*next_generation_function)(vector<AIInstance*>& instances),
+        vector<AIInstance*> initial,
+        unsigned int pool_count
+    ) : GenerationalAI(challenge_function, next_generation_function, vector<AIInstance*>())
 {
     for (unsigned int i = 0; i < pool_count; i++)
     {
@@ -178,9 +189,13 @@ int PartitionedGenerationalAI::best_score() const
 
 void PartitionedGenerationalAI::run_instances()
 {
+    string input;
+    string expected;
+    std::tie(input, expected) = this->challenge_function();
+
     for (vector<vector<AIInstance*>>::iterator pool = this->instance_pools.begin(); pool != this->instance_pools.end(); pool++)
         for (vector<AIInstance*>::iterator iter = pool->begin(); iter != pool->end(); iter++)
-            (*iter)->run();
+            (*iter)->run(input, expected);
 }
 
 void PartitionedGenerationalAI::rank_instances()

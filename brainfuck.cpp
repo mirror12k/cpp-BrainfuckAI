@@ -90,9 +90,9 @@ string brainfuck_run(int max_steps, const string& code, const string& input)
         case ',': // input
             if (input_iterator != input.end()) // if there is input to read
                 buffer[buffer_pointer] = *input_iterator++;
-            else // if there is no input,
+            else // if there is no input
                 iter = current_end - 1; // force end of segment
-
+            break;
         case '.': // output
             output += buffer[buffer_pointer];
             break;

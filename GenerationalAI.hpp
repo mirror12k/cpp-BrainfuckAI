@@ -3,9 +3,11 @@
 
 #include <vector>
 #include <string>
+#include <tuple>
 
 using std::vector;
 using std::string;
+using std::tuple;
 
 
 
@@ -22,7 +24,7 @@ public:
     virtual string info() const = 0;
 
     // virtual function responsible for executing the AI and setting its own score
-    virtual void run () = 0;
+    virtual void run (const string& input, const string& expected) = 0;
     // virtual function responsible for replicating and mutating this instance
     virtual AIInstance* create_child() const = 0;
     virtual AIInstance* clone() const = 0; // creates an identical copy of this object and returns it
@@ -39,7 +41,11 @@ class GenerationalAI
 {
 public:
     // initializer which takes an function for deciding the next generation and a vector of initial competitors
-    GenerationalAI(vector<AIInstance*> (*next_generation_function)(vector<AIInstance*>& instances), vector<AIInstance*> initial);
+    GenerationalAI(
+        tuple<string, string> (*challenge_function)(),
+        vector<AIInstance*> (*next_generation_function)(vector<AIInstance*>& instances),
+        vector<AIInstance*> initial
+    );
     // runs a single generation on the competitors
     void run_generation();
 
@@ -52,6 +58,7 @@ protected:
     virtual void rank_instances ();
     virtual void generate_next_generation ();
 
+    tuple<string, string> (*challenge_function)();
     vector<AIInstance*> (*next_generation_function)(vector<AIInstance*>& instances);
     vector<AIInstance*> instances;
     vector<AIInstance*> last_generation;
@@ -69,8 +76,12 @@ vector<AIInstance*> generation_duplicate_top_quartile_with_ancestor (vector<AIIn
 class PartitionedGenerationalAI : public GenerationalAI
 {
 public:
-    PartitionedGenerationalAI(vector<AIInstance*> (*next_generation_function)(vector<AIInstance*>& instances),
-        vector<AIInstance*> initial, unsigned int pool_count);
+    PartitionedGenerationalAI(
+        tuple<string, string> (*challenge_function)(),
+        vector<AIInstance*> (*next_generation_function)(vector<AIInstance*>& instances),
+        vector<AIInstance*> initial,
+        unsigned int pool_count
+    );
 
     virtual void print_scores(unsigned int number) const;
     virtual int best_score() const;
